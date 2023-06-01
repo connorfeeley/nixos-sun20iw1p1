@@ -12,4 +12,6 @@
   # For cross builds from platforms other than 'x86_64-linux', edit the following line
   # For native / emulated builds, comment out the following line
   nixpkgs.buildPlatform = "x86_64-linux";
+
+  services.openssh.enable = true;
 }
