@@ -14,4 +14,6 @@
   nixpkgs.buildPlatform = "x86_64-linux";
 
   services.openssh.enable = true;
+
+  services.tailscale.enable = true;
 }
