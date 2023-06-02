@@ -12,6 +12,12 @@ Due to performance limitations of current RISC-V machines, it may not be trivial
 
 Prebuilt images can be found on the [GitHub releases page](https://github.com/chuangzhu/nixos-sun20iw1p1/releases).
 
+The `riscv64-linux` cache on Cachix contains prebuilt artifacts:
+
+``` shellsession
+cachix use riscv64-linux
+```
+
 ## Status
 
 The image boots successfully with WiFi and HDMI support. Supported boards:
