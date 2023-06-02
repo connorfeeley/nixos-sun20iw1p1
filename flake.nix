@@ -5,17 +5,31 @@
 
   outputs = { self, nixpkgs }: {
     overlays.default = import ./overlay.nix;
-    legacyPackages = {
-      riscv64-linux = import nixpkgs {
-        system = "riscv64-linux";
-        overlays = [ self.overlays.default ];
-      };
-      # legacyPackages.x86_64-linux.pkgsCross.riscv64
-      x86_64-linux = import nixpkgs {
-        system = "x86_64-linux";
-        overlays = [ self.overlays.default ];
-      };
-    };
+    legacyPackages =
+      let
+        riscv64-linux-patched = (import nixpkgs {
+          system = "riscv64-linux";
+          overlays = [ self.overlays.default ];
+        }).applyPatches {
+          name = "nixpkgs-patched-234218";
+          src = nixpkgs;
+          patches = [ ./nixos-nixpkgs-234128.patch ];
+        };
+        x86_64-linux-patched = (import nixpkgs {
+          system = "x86_64-linux";
+          overlays = [ self.overlays.default ];
+        }).applyPatches {
+          name = "nixpkgs-patched-234218";
+          src = nixpkgs;
+          patches = [ ./nixos-nixpkgs-234128.patch ];
+        };
+      in
+        {
+          riscv64-linux = import riscv64-linux-patched { system = "riscv64-linux"; };
+
+          # legacyPackages.x86_64-linux.pkgsCross.riscv64
+          x86_64-linux = import x86_64-linux-patched { system = "x86_64-linux"; };
+        };
     nixosModules = {
       sd-image-licheerv = import ./sd-image-licheerv.nix;
     };
