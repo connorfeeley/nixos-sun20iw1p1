@@ -1,0 +1,43 @@
+From dca8139f96aec5f9435c60e85f56fda6ad4ff7af Mon Sep 17 00:00:00 2001
+From: Nick Cao <nickcao@nichi.co>
+Date: Fri, 26 May 2023 11:28:29 +0800
+Subject: [PATCH] gnu-efi: patch to fix build for riscv64
+
+---
+ .../development/libraries/gnu-efi/default.nix | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/development/libraries/gnu-efi/default.nix b/pkgs/development/libraries/gnu-efi/default.nix
+index 4da4eec785808..6a7ee0a5fb7f1 100644
+--- a/pkgs/development/libraries/gnu-efi/default.nix
++++ b/pkgs/development/libraries/gnu-efi/default.nix
+@@ -1,5 +1,11 @@
+-{ lib, stdenv, buildPackages, fetchurl, pciutils
+-, gitUpdater }:
++{ lib
++, stdenv
++, buildPackages
++, fetchurl
++, fetchpatch
++, pciutils
++, gitUpdater
++}:
+ 
+ stdenv.mkDerivation rec {
+   pname = "gnu-efi";
+@@ -10,6 +16,15 @@ stdenv.mkDerivation rec {
+     sha256 = "sha256-eAfpAzSTQ6ehQuu5NHA6KHIjXolojPWGwDKwoQh7yvQ=";
+   };
+ 
++  patches = [
++    # riscv64: fix efibind.h missing/duplicate types
++    # https://sourceforge.net/p/gnu-efi/patches/88
++    (fetchpatch {
++      url = "https://sourceforge.net/p/gnu-efi/patches/88/attachment/riscv64-fix-efibind.h-missing-duplicate-types.patch";
++      hash = "sha256-fUAxj1/U9J2A1zMEdnh62+WnVmQ9hrrYwMFppBz1Y1g=";
++    })
++  ];
++
+   buildInputs = [ pciutils ];
+ 
+   hardeningDisable = [ "stackprotector" ];
